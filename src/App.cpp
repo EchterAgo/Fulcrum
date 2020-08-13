@@ -334,10 +334,10 @@ void App::parseArgs()
          },
      };
 
-    if (!registeredTests.empty()) {
+    if (!registeredTests().empty()) {
         // add --test option if we have any registered tests
         QStringList tests;
-        for (const auto & [name, func] : registeredTests)
+        for (const auto & [name, func] : registeredTests())
             tests.append(name);
         allOptions.push_back({
             "test",
@@ -346,10 +346,10 @@ void App::parseArgs()
             QString("test")
         });
     }
-    if (!registeredBenches.empty()) {
+    if (!registeredBenches().empty()) {
         // add --bench option if we have any registered benches
         QStringList benches;
-        for (const auto & [name, func] : registeredBenches)
+        for (const auto & [name, func] : registeredBenches())
             benches.append(name);
         allOptions.push_back({
             "bench",
@@ -367,35 +367,35 @@ void App::parseArgs()
     // those immediately exit the app if they do run.
     try {
         int setCtr = 0;
-        if (!registeredTests.empty() && parser.isSet("test")) {
+        if (!registeredTests().empty() && parser.isSet("test")) {
             ++setCtr;
             auto vals = parser.values("test");
             if (vals.length() == 1 && vals.front() == "all") {
                 // special keyword "all" means run all tests
-                vals = Util::keySet<decltype(vals)>(registeredTests);
+                vals = Util::keySet<decltype(vals)>(registeredTests());
                 Log() << "Running all " << vals.count() << " tests ...";
             }
             // process tests and exit if we take this branch
             for (const auto & tname : vals) {
-                auto it = registeredTests.find(tname);
-                if (it == registeredTests.end())
+                auto it = registeredTests().find(tname);
+                if (it == registeredTests().end())
                     throw BadArgs(QString("No such test: %1").arg(tname));
                 Log() << "Running test: " << it->first << " ...";
                 it->second();
             }
         }
-        if (!registeredBenches.empty() && parser.isSet("bench")) {
+        if (!registeredBenches().empty() && parser.isSet("bench")) {
             ++setCtr;
             auto vals = parser.values("bench");
             if (vals.length() == 1 && vals.front() == "all") {
                 // special keyword "all" means run all benchmarks
-                vals = Util::keySet<decltype(vals)>(registeredBenches);
+                vals = Util::keySet<decltype(vals)>(registeredBenches());
                 Log() << "Running all " << vals.count() << " benchmarks ...";
             }
             // process benches and exit if we take this branch
             for (const auto & tname : vals) {
-                auto it = registeredBenches.find(tname);
-                if (it == registeredBenches.end())
+                auto it = registeredBenches().find(tname);
+                if (it == registeredBenches().end())
                     throw BadArgs(QString("No such bench: %1").arg(tname));
                 Log() << "Running benchmark: " << it->first << " ...";
                 it->second();
@@ -1190,7 +1190,18 @@ void App::on_bitcoindThrottleParamsChange(int hi, int lo, int decay)
 }
 
 /* static */
-std::map<QString, std::function<void()>> App::registeredTests, App::registeredBenches;
+App::NameFuncMap &App::registeredTests()
+{
+    static NameFuncMap map;
+    return map;
+}
+
+App::NameFuncMap &App::registeredBenches()
+{
+    static NameFuncMap map;
+    return map;
+}
+
 
 /* static */
 void App::registerTestBenchCommon(const char *fname, const char *brief, NameFuncMap &map,
@@ -1209,14 +1220,14 @@ void App::registerTestBenchCommon(const char *fname, const char *brief, NameFunc
 /* static */
 auto App::registerTest(const QString &name, const std::function<void()> &func) -> RegisteredTest
 {
-    registerTestBenchCommon(__func__, "test", registeredTests, name, func);
+    registerTestBenchCommon(__func__, "test", registeredTests(), name, func);
     return {};
 }
 
 /* static */
 auto App::registerBench(const QString &name, const std::function<void()> &func) -> RegisteredBench
 {
-    registerTestBenchCommon(__func__, "bench", registeredBenches, name, func);
+    registerTestBenchCommon(__func__, "bench", registeredBenches(), name, func);
     return {};
 }
 

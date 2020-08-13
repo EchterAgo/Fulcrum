@@ -117,7 +117,8 @@ private:
 
     /// Used for registerTest and registerBench
     using NameFuncMap = std::map<QString, std::function<void()>>;
-    static NameFuncMap registeredTests, registeredBenches;
+    static NameFuncMap &registeredTests();
+    static NameFuncMap &registeredBenches();
     static void registerTestBenchCommon(const char *fname, const char *brief, NameFuncMap &map,
                                         const NameFuncMap::key_type &name, const NameFuncMap::mapped_type &func);
     /// Call this at app init and/or after the App object is initialized to undo the locale damage that Qt does
