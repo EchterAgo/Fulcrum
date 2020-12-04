@@ -62,7 +62,8 @@ bool AbstractConnection::isGood() const
 
 bool AbstractConnection::isStale() const
 {
-    return isGood() && Util::getTime() - lastGood > stale_threshold;
+    return false;
+    //return isGood() && Util::getTime() - lastGood > stale_threshold;
 }
 
 // The below 4 will only return valid results if this->thread() == QThread::currentThread(), and if socket != nullptr
