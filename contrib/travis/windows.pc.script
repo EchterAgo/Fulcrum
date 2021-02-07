@@ -1,5 +1,6 @@
 #!/bin/sh
 set -e
+set -x
 export msys2='cmd //C RefreshEnv.cmd '
 export msys2+='& set MSYS=winsymlinks:nativestrict '
 export msys2+='& C:\\tools\\msys64\\msys2_shell.cmd -defterm -no-start'
@@ -7,5 +8,5 @@ export mingw="$msys2 -$TARGET_MINGW -full-path -here -c "\"\$@"\" --"
 export msys2+=" -msys2 -c "\"\$@"\" --"
 export PATH=/C/tools/msys64/$TARGET_MINGW/bin:$PATH
 $mingw qmake -makefile CONFIG+=release DEFINES+=ENABLE_TESTS Fulcrum.pro
-$mingw make install
+$mingw mingw32-make install
 ./release/Fulcrum.exe --test all
