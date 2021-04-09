@@ -1084,9 +1084,9 @@ void App::parseArgs()
         int val = conf.intValue("worker_threads", 0, &ok);
         if (!ok || val < 0)
             throw BadArgs("worker_threads: bad value. Specify an integer >= 0");
-        if (val > int(Util::getNVirtualProcessors()))
-            throw BadArgs(QString("worker_threads: Specified value of %1 exceeds the detected number of virtual processors of %2")
-                          .arg(val).arg(Util::getNVirtualProcessors()));
+        // if (val > int(Util::getNVirtualProcessors()))
+        //     throw BadArgs(QString("worker_threads: Specified value of %1 exceeds the detected number of virtual processors of %2")
+        //                   .arg(val).arg(Util::getNVirtualProcessors()));
         if (val > 0 && !tpool->setMaxThreadCount(val))
             throw BadArgs(QString("worker_threads: Unable to set worker threads to %1").arg(val));
         options->workerThreads = val; // save advisory value for stats(), etc code
