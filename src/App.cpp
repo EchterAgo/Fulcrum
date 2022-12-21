@@ -1376,6 +1376,16 @@ void App::parseArgs()
         Util::AsyncOnObject(this, [val]{ DebugM("config: max_batch = ", val); });
     }
 
+    // conf: stop_after_height
+    if (conf.hasValue("stop_after_height")) {
+        bool ok{};
+        const unsigned val = unsigned(conf.intValue("stop_after_height", Options::defaultStopAfterHeight, &ok));
+        if (!ok)
+            throw BadArgs(QString("stop_after_height: please specify an integer value"));
+        options->stopAfterHeight = val;
+        Util::AsyncOnObject(this, [val]{ DebugM("config: stop_after_height = ", val); });
+    }
+
     // parse --dump-*
     if (const auto outFile = parser.value("dump-sh"); !outFile.isEmpty()) {
         options->dumpScriptHashes = outFile; // we do no checking here, but Controller::startup will throw BadArgs if it cannot open this file for writing.

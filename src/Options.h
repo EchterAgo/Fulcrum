@@ -273,6 +273,10 @@ public:
     static constexpr bool isMaxBatchInRange(unsigned n) { return n >= maxBatchMin && n <= maxBatchMax; }
     unsigned maxBatch = defaultMaxBatch;
 
+    // config: stop_after_height
+    static constexpr int defaultStopAfterHeight = 0;
+    int stopAfterHeight = defaultStopAfterHeight;
+
     // CLI: --utxo-cache (experimental)
     static constexpr size_t defaultUtxoCache = 0, minUtxoCache = 64ull * 1000ull * 1000ull; // 0 is off, otherwise 64 MB min
     size_t utxoCache = defaultUtxoCache;

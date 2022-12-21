@@ -205,6 +205,8 @@ QVariantMap Options::toMap() const
     // upnp
     m["upnp"] = upnp;
 
+    // stop_after_height
+    m["stop_after_height"] = stopAfterHeight;
     return m;
 }
 
