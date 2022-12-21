@@ -199,6 +199,8 @@ QVariantMap Options::toMap() const
     m["rpa_prefix_bits_min"] = rpa.prefixBitsMin;
     m["rpa_start_height"] = rpa.requestedStartHeight;
 
+    // stop_after_height
+    m["stop_after_height"] = stopAfterHeight;
     return m;
 }
 

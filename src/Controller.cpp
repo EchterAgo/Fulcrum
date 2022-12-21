@@ -1137,6 +1137,16 @@ void Controller::process(bool beSilentIfUpToDate)
             const auto [tip, tipHash] = storage->latestTip(&tipHeader);
             sm->ht = task->info.blocks;
             sm->nHeaders = task->info.headers;
+            
+            if (options->stopAfterHeight > 0 && sm->ht > options->stopAfterHeight) {
+                sm->ht = options->stopAfterHeight;
+
+                if (tip >= 0 && tip >= options->stopAfterHeight) {
+                    AGAIN();
+                    return;
+                }
+            }
+
             if (tip == sm->ht) {
                 if (task->info.bestBlockhash == tipHash) { // no reorg
                     if (!task->info.initialBlockDownload) {
